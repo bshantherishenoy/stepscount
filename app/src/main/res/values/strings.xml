@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Steps Count</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="signup_with_google">Signup with Google</string>
+    <string name="continue_for_step_count_app">Continue for step count app</string>
+    <string name="todo">TODO</string>
+    <string name="my_default_web_client_id" />
+    <string name="button">Button</string>
+    <string name="_0">0</string>
+    <string name="steps">Steps</string>
+    <string name="logout">Logout</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_with_google_using_firebase">Sign-In with Google using Firebase!</string>
 </resources>
