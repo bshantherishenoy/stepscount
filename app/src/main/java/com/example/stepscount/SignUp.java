@@ -6,16 +6,23 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
 
@@ -24,9 +31,11 @@ public class SignUp extends AppCompatActivity {
     Button logout;
     private TextView textView;
 
+    private ImageView imageView2;
     private double magnitudePrevious = 0;
 
     private Integer stepCount = 0;
+
 
 
     @Override
@@ -39,12 +48,17 @@ public class SignUp extends AppCompatActivity {
         name = findViewById(R.id.name);
         mail = findViewById(R.id.mail);
         textView = findViewById(R.id.textView);
+        imageView2 = findViewById(R.id.imageView2);
 
 
+        CircularProgressBar circularProgressBar = findViewById(R.id.circularProgressBar);
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
         if (signInAccount != null) {
             name.setText(signInAccount.getDisplayName());
             mail.setText(signInAccount.getEmail());
+            Uri photoUrl = signInAccount.getPhotoUrl();
+            Picasso.get().load(photoUrl).into(imageView2);
+
         }
 
 
@@ -77,6 +91,8 @@ public class SignUp extends AppCompatActivity {
                         stepCount++;
                     }
                     textView.setText(stepCount.toString());
+
+                    circularProgressBar.setProgressWithAnimation(stepCount, (long) 10000);
 
                 }
             }
