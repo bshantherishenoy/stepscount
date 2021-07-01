@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,7 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.squareup.picasso.Picasso;
 
-import java.util.Objects;
+
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class SignUp extends AppCompatActivity {
 
@@ -34,7 +36,7 @@ public class SignUp extends AppCompatActivity {
     private ImageView imageView2;
     private double magnitudePrevious = 0;
 
-    private Integer stepCount = 0;
+    private static Integer stepCount = 0;
 
 
 
@@ -46,7 +48,7 @@ public class SignUp extends AppCompatActivity {
 
         logout = findViewById(R.id.logout);
         name = findViewById(R.id.name);
-        mail = findViewById(R.id.mail);
+//        mail = findViewById(R.id.mail);
         textView = findViewById(R.id.textView);
         imageView2 = findViewById(R.id.imageView2);
 
@@ -55,9 +57,10 @@ public class SignUp extends AppCompatActivity {
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
         if (signInAccount != null) {
             name.setText(signInAccount.getDisplayName());
-            mail.setText(signInAccount.getEmail());
+//            mail.setText(signInAccount.getEmail());
             Uri photoUrl = signInAccount.getPhotoUrl();
-            Picasso.get().load(photoUrl).into(imageView2);
+//          Picasso.get().load(photoUrl).into(imageView2);
+            Picasso.get().load(photoUrl).transform(new RoundedCornersTransformation(100, 0)).resize(100, 100).into(imageView2);
 
         }
 
@@ -83,16 +86,18 @@ public class SignUp extends AppCompatActivity {
                     float y_acceleration = event.values[1];
                     float z_acceleration = event.values[2];
 
-                    double magnitude = Math.sqrt(x_acceleration * x_acceleration + y_acceleration * y_acceleration + z_acceleration * z_acceleration);
+                    double magnitude = Math.sqrt((x_acceleration * x_acceleration) + (y_acceleration * y_acceleration) + (z_acceleration * z_acceleration));
                     double magnitudeDelta = magnitude - magnitudePrevious;
                     magnitudePrevious = magnitude;
 
+
                     if (magnitudeDelta > 5) {
-                        stepCount++;
+                        stepCount = stepCount+1;
                     }
                     textView.setText(stepCount.toString());
+                    circularProgressBar.setProgress(stepCount);
 
-                    circularProgressBar.setProgressWithAnimation(stepCount, (long) 10000);
+//                    circularProgressBar.setProgressWithAnimation(stepCount, (long) 1000);
 
                 }
             }
@@ -116,6 +121,7 @@ public class SignUp extends AppCompatActivity {
         editor.clear();
         editor.putInt("stepCount", stepCount);
         editor.apply();
+        Toast.makeText(this, "On Pause", Toast.LENGTH_SHORT).show();
     }
 
     protected void onStop() {
@@ -126,6 +132,7 @@ public class SignUp extends AppCompatActivity {
         editor.clear();
         editor.putInt("stepCount", stepCount);
         editor.apply();
+        Toast.makeText(this, "On Stop", Toast.LENGTH_SHORT).show();
     }
 
     protected void onResume() {
@@ -133,6 +140,7 @@ public class SignUp extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         stepCount = sharedPreferences.getInt("stepCount", 0);
+        Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show();
 
     }
 
